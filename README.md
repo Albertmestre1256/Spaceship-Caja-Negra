@@ -40,6 +40,13 @@ To achieve the realtime experience, I have to use agreesive speculative generati
 
 I'm currently focusing on systems that help human shape ideas in realtime. This project is a small step towards my [upcoming thesis](https://code.chuanqisun.com/master-thesis/) at the MIT Media Lab, where I investigate how semantic and symoblic systems can be coupled to enhance human creativity, agency, and joy of craft.
 
+## Community
+
+This repo can be the conceptual launchpad for new designs and applications. Here is what the community has built. Open a PR to add yours!
+
+- [Spaceship Writer](https://marketplace.visualstudio.com/items?itemName=brentlee-personal.spaceship-writer), a VSCode Extension by [brentlee](https://github.com/brentlee-personal)
+- [Spaceship Lime](https://spaceship-lime.vercel.app), steer local models in browser, by [Philippe](https://github.com/philippe-page)
+
 ## Citation
 
 If you build on this work, please cite it as:
