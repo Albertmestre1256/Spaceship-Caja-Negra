@@ -1,6 +1,6 @@
 # 🕹️ Spaceship IDE
 
-Steer your ideas in realtime, space pilot style!
+Steer ideas like a space pilot!
 
 ![Screencast](./extra/screencast.gif)
 
