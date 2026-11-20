@@ -44,7 +44,7 @@ I'm currently focusing on systems that help human shape ideas in realtime. This 
 
 This repo can be the conceptual launchpad for new designs and applications. Here is what the community has built. Open a PR to add yours!
 
-- [Spaceship Writer](https://marketplace.visualstudio.com/items?itemName=brentlee-personal.spaceship-writer), a VSCode Extension by [brentlee](https://github.com/brentlee-personal)
+- [Spaceship Writer](https://marketplace.visualstudio.com/items?itemName=brentlee-personal.spaceship-writer), a VSCode Extension by [brentlee](https://github.com/brentlee-personal), an independent adaptation of Chuanqi Sun’s Future Vector Steering design ([Source](https://github.com/brentlee-personal/spaceship-vscode) · [Demo in VS Code on Linux](https://github.com/brentlee-personal/spaceship-vscode/releases/download/v0.3.0/spaceship-writer-0.3.0-linux.mp4))
 - [Spaceship Lime](https://spaceship-lime.vercel.app), steer local models in browser, by [Philippe](https://github.com/philippe-page)
 
 ## Citation
