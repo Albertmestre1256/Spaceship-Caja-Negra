@@ -1,30 +1,26 @@
-import { createDecisions, storedGeminiKey, type Question } from "../llm/decisions.ts"
+import { createDecisions, type Question } from "../llm/decisions.ts"
 import type { RelevanceSource } from "./keyword-relevance.ts"
 
-const MODEL = "gemini-decision-1"
 const LEVELS = [
-  "Not relevant",
-  "Weak: shares the setting or a passing detail",
-  "Moderate: bears on what the tip is about",
-  "Strong: the tip is about it, or turns on it",
+  "Irrelevante",
+  "Débil: comparte el escenario o un detalle pasajero",
+  "Moderada: tiene que ver con aquello de lo que trata la PUNTA",
+  "Fuerte: la PUNTA trata de ella o gira en torno a ella",
 ]
 
 export const liveRelevance: RelevanceSource = async function* ({ story, tip, leads }, signal) {
-  const apiKey = storedGeminiKey()
-  if (!apiKey) throw new Error("save a Gemini API key on the decisions page first")
-
   const input = [
-    ...(story ? [`STORY SO FAR\n${story}`] : []),
-    `TIP (the sentence being written now)\n${tip}`,
-    `KEYWORDS\n${leads.map(({ before, keyword, after }, i) => `[${i + 1}] ${keyword} (in "${before}${keyword}${after}")`).join("\n")}`,
+    ...(story ? [`EL TEXTO HASTA AHORA\n${story}`] : []),
+    `PUNTA (la oración que se está escribiendo ahora)\n${tip}`,
+    `PALABRAS CLAVE\n${leads.map(({ before, keyword, after }, i) => `[${i + 1}] ${keyword} (en "${before}${keyword}${after}")`).join("\n")}`,
   ].join("\n\n")
   const questions = Object.fromEntries(
     leads.map((lead, i): [string, Question] => [
       keyOf(i),
-      { type: "score", instructions: `How relevant is keyword [${i + 1}] "${lead.keyword}" to the TIP?`, criteria: LEVELS },
+      { type: "score", instructions: `¿Qué tan relevante es la palabra clave [${i + 1}] "${lead.keyword}" para la PUNTA?`, criteria: LEVELS },
     ]),
   )
-  const { answers } = await createDecisions(apiKey, { model: MODEL, input, questions }, signal)
+  const { answers } = await createDecisions({ label: "relevancia de palabras clave", input, questions }, signal)
 
   for (const index of leads.keys()) {
     const answer = answers[keyOf(index)]

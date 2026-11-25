@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>Spaceship</title>
+    <title>Spaceship · caja negra</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕹️</text></svg>" />
     <style>
       @property --fill {
@@ -604,6 +604,7 @@
       }
       #mode-toggle,
       #sound-toggle,
+      #xray-toggle,
       #extra-link {
         padding: 0 var(--gap);
         border: none;
@@ -630,7 +631,7 @@
         border-right: var(--hair) solid var(--ink-5);
 
         b {
-          width: 6ch;
+          width: 10ch;
         }
         &[aria-pressed="false"] b {
           animation: blink 1s steps(1) infinite;
@@ -647,7 +648,79 @@
       #sound-toggle[aria-pressed="false"] {
         color: var(--ink-4);
       }
-      /* Asks for the API keys each time live mode is entered. */
+      #xray-toggle {
+        color: var(--hot);
+      }
+      /* Everything the interface exchanges with the model: the text sent and the text received. */
+      #xray {
+        width: min(110ch, 100% - 2 * var(--padding));
+        max-height: calc(100% - 2 * var(--padding));
+        padding: calc(2 * var(--gap));
+        border: var(--hair) solid var(--hot);
+        background: var(--bg);
+        color: var(--ink);
+
+        &::backdrop {
+          background: rgb(0 0 0 / 0.8);
+        }
+        h2,
+        h3,
+        p {
+          margin: 0 0 var(--gap);
+          font: inherit;
+        }
+        h2 {
+          color: var(--hot);
+        }
+        p {
+          color: var(--ink-2);
+          max-width: 90ch;
+        }
+        h3 {
+          margin-top: var(--gap);
+          color: var(--ink-3);
+        }
+        details {
+          border-top: var(--hair) solid var(--ink-5);
+          padding: var(--gap) 0;
+        }
+        summary {
+          cursor: pointer;
+          b {
+            font-weight: inherit;
+            color: var(--ink);
+          }
+          [data-status="streaming"] {
+            color: var(--hot);
+          }
+          [data-status="error"] {
+            color: var(--hot);
+          }
+        }
+        pre {
+          margin: 0;
+          padding: var(--gap);
+          max-height: 30ch;
+          overflow: auto;
+          white-space: pre-wrap;
+          font: inherit;
+          color: var(--ink-2);
+          border: var(--hair) solid var(--ink-5);
+        }
+        pre[data-response] {
+          color: var(--ink);
+          border-color: var(--ink-3);
+        }
+        .actions {
+          display: flex;
+          justify-content: end;
+          margin-top: var(--gap);
+          button {
+            font: inherit;
+          }
+        }
+      }
+      /* Asks for the API key each time live mode is entered. */
       #live-keys {
         width: min(48ch, 100% - 2 * var(--padding));
         padding: calc(2 * var(--gap));
@@ -862,58 +935,44 @@
       id="pointer"
       class="knob"
       type="button"
-      aria-label="drag to scrub the text forward or back, double click to expand attention highlights or remove everything attached, double click and hold to open the fan menu"
+      aria-label="arrastrá para avanzar o retroceder el texto, doble clic para expandir los recuadros de atención o quitar todo lo agregado, doble clic sostenido para abrir el abanico"
     ></button>
     <template id="future-knob">
-      <button class="knob future" type="button" aria-label="future knob, …, double click to delete"><span>…</span></button>
+      <button class="knob future" type="button" aria-label="perilla de futuro, …, doble clic para borrar"><span>…</span></button>
     </template>
     <div id="cursor" aria-hidden="true"></div>
     <footer id="tray">
-      <button id="mode-toggle" type="button" aria-pressed="false" aria-label="flight mode">mode<b>sim</b></button>
+      <button id="mode-toggle" type="button" aria-pressed="false" aria-label="modo vuelo">modo<b>simulación</b></button>
       <output id="status" aria-live="off"></output>
-      <button id="sound-toggle" type="button" aria-pressed="true" aria-label="sound">♪<b>on</b></button>
+      <button id="xray-toggle" type="button" aria-haspopup="dialog">rayos X</button>
+      <button id="sound-toggle" type="button" aria-pressed="true" aria-label="sonido">♪<b>sí</b></button>
       <a id="extra-link" href="extra/style-1.html">extra</a>
     </footer>
     <dialog id="live-keys" aria-labelledby="live-keys-title" aria-describedby="live-keys-note" closedby="closerequest">
       <form method="dialog" autocomplete="off">
-        <h2 id="live-keys-title">launch</h2>
-        <p id="live-keys-note">Lift off from the simulator to call the real API with your own keys, kept in this browser's local storage.</p>
-        <label
-          >cerebras
-          <input
-            name="cerebras"
-            type="text"
-            required
-            autocomplete="off"
-            autocapitalize="off"
-            autocorrect="off"
-            spellcheck="false"
-            data-1p-ignore
-            data-lpignore="true"
-            data-bwignore
-            data-form-type="other"
-            autofocus
-        /></label>
-        <label
-          >gemini
-          <input
-            name="gemini"
-            type="text"
-            required
-            autocomplete="off"
-            autocapitalize="off"
-            autocorrect="off"
-            spellcheck="false"
-            data-1p-ignore
-            data-lpignore="true"
-            data-bwignore
-            data-form-type="other"
-        /></label>
+        <h2 id="live-keys-title">despegar</h2>
+        <p id="live-keys-note">
+          Salir del simulador y llamar a los modelos reales de NVIDIA: Nemotron 3 Ultra escribe el texto, elige los recuadros y da los puntajes; Nemotron 3.5
+          Lightning propone los ejes. La clave se lee del archivo .env del servidor local y nunca llega a esta página. Necesita internet.
+        </p>
         <p class="actions">
-          <button type="button" command="close" commandfor="live-keys">abort</button>
-          <button value="live">launch</button>
+          <button type="button" command="close" commandfor="live-keys">cancelar</button>
+          <button value="live" autofocus>despegar</button>
         </p>
       </form>
+    </dialog>
+    <dialog id="xray" aria-labelledby="xray-title" closedby="any">
+      <h2 id="xray-title">rayos X</h2>
+      <p>
+        Esto es todo lo que la interfaz ve del modelo: el texto que le manda y el texto que recibe. Lo que pasa entre una cosa y la otra, adentro del modelo, no
+        se ve desde acá.
+      </p>
+      <p>
+        Los recuadros de «atención» y los puntajes de influencia no se miden dentro del modelo: son respuestas que el propio modelo escribe cuando se le
+        pregunta, y la interfaz las dibuja encima del texto.
+      </p>
+      <div data-calls></div>
+      <p class="actions"><button type="button" command="close" commandfor="xray">cerrar</button></p>
     </dialog>
     <script type="module" src="/src/text/main.ts"></script>
   </body>

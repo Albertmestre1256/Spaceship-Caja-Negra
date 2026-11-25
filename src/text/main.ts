@@ -15,6 +15,7 @@ import { createLeftRail } from "./left-rail.ts"
 import { circleOf } from "./links.ts"
 import { liveAttention } from "./live-attention.ts"
 import { liveSource } from "./live-completion.ts"
+import { bindXrayPanel } from "./xray-panel.ts"
 import { liveDimension } from "./live-dimension.ts"
 import { liveInfluence } from "./live-influence.ts"
 import { bindModeToggle } from "./live-mode.ts"
@@ -120,6 +121,7 @@ let didHold = false
 let lastDrag: { point: Point; at: number } | undefined
 
 bindModeToggle(modeToggle, $<HTMLDialogElement>("#live-keys"), isLive)
+bindXrayPanel($<HTMLButtonElement>("#xray-toggle"), $<HTMLDialogElement>("#xray"), isLive)
 startSound()
 showSoundToggle()
 soundToggle.addEventListener("click", () => {
@@ -505,7 +507,7 @@ function soundWordsCrossed(before: number | undefined, point: Point) {
 function showSoundToggle() {
   const isOn = isSoundOn()
   soundToggle.setAttribute("aria-pressed", `${isOn}`)
-  soundToggle.querySelector("b")!.textContent = isOn ? "on" : "off"
+  soundToggle.querySelector("b")!.textContent = isOn ? "sí" : "no"
 }
 
 /** Read on every use, since the centered column moves with the window. */

@@ -1,54 +1,50 @@
-const API_URL = "https://generativelanguage.googleapis.com/v1beta/decisions"
+import { requestJson, WRITER_MODEL } from "./nim.ts"
 
-export const KEY_STORAGE = "gemini-api-key"
-
-export const storedGeminiKey = () => localStorage.getItem(KEY_STORAGE)?.trim()
-
-export type Resolution = "low" | "medium" | "high" | "ultra_high"
-
-export type ContentBlock =
-  | { type: "text"; text: string }
-  | { type: "image"; data: string; mime_type: string; resolution?: Resolution }
-  | { type: "audio"; data: string; mime_type: string }
-  | { type: "video"; data: string; mime_type: string; resolution?: Exclude<Resolution, "ultra_high"> }
-
+/**
+ * Stands in for a scoring API: every question is put to a language model, which answers with numbers.
+ * The scores are what the model writes about the text, not a measurement taken inside it.
+ */
 export type Question =
   | { type: "noul"; instructions: string; criteria?: { true_description?: string; false_description?: string } }
-  | { type: "choice"; instructions: string; criteria: Record<string, string> }
   | { type: "score"; instructions: string; criteria: string[] }
 
-export type Answer =
-  | { type: "noul"; noul: number; confidence: number }
-  | { type: "choice"; choice: string; probabilities: Record<string, number>; confidence: number }
-  | { type: "score"; score: number; probabilities: Record<string, number>; legend: Record<string, string>; confidence: number }
-
-export type DecisionResponse = {
-  answers: Record<string, Answer>
-  usage: {
-    total_input_tokens: number
-    input_tokens_by_modality: { modality: string; tokens: number }[]
-    total_output_tokens: number
-    total_tokens: number
-  }
-}
+export type Answer = { type: "noul"; noul: number } | { type: "score"; score: number }
 
 export type DecisionRequest = {
-  model: string
-  input: string | ContentBlock[]
+  label: string
+  input: string
   questions: Record<string, Question>
 }
 
-export async function createDecisions(apiKey: string, request: DecisionRequest, signal: AbortSignal) {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    signal,
-    headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-    body: JSON.stringify(request),
-  })
-  const body = await response.json()
+const CONFIDENCE_STEPS = [0, 25, 50, 75, 100]
 
-  if (!response.ok)
-    throw new Error(`HTTP ${response.status} ${body.error?.code ?? ""} ${body.error?.status ?? ""}: ${body.error?.message ?? JSON.stringify(body)}`)
+const SYSTEM_PROMPT = `Sos un evaluador. El mensaje trae un texto y una lista de PREGUNTAS, cada una con su clave.
+Respondé cada pregunta con un número entero, según la escala que indica.
+Devolvé solo un objeto JSON con una entrada por clave, por ejemplo {"s1": 2, "s2": 0}, sin explicaciones ni texto alrededor.`
 
-  return body as DecisionResponse
+export async function createDecisions({ label, input, questions }: DecisionRequest, signal: AbortSignal) {
+  const keys = Object.keys(questions)
+  const user = `${input}\n\nPREGUNTAS\n${keys.map((key) => questionLine(key, questions[key])).join("\n")}`
+  const raw = await requestJson<Record<string, number>>({ model: WRITER_MODEL, label, system: SYSTEM_PROMPT, user, signal })
+  return { answers: Object.fromEntries(keys.map((key) => [key, answerOf(questions[key], Number(raw[key]))])) }
+}
+
+function questionLine(key: string, question: Question) {
+  if (question.type === "score") {
+    const scale = question.criteria.map((level, i) => `${i} = ${level}`).join("; ")
+    return `${key}: ${question.instructions} Escala: ${scale}.`
+  }
+  const yes = question.criteria?.true_description ? ` Sí: ${question.criteria.true_description}` : ""
+  const no = question.criteria?.false_description ? ` No: ${question.criteria.false_description}` : ""
+  return `${key}: ${question.instructions} Respondé ${CONFIDENCE_STEPS.join(", ")} según cuán seguro estás de que la respuesta es sí.${yes}${no}`
+}
+
+function answerOf(question: Question, value: number): Answer {
+  const number = Number.isFinite(value) ? value : 0
+  if (question.type === "score") return { type: "score", score: clamp(Math.round(number), 0, question.criteria.length - 1) }
+  return { type: "noul", noul: clamp(number, 0, 100) / 100 }
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value))
 }

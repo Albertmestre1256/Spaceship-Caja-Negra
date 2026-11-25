@@ -11,7 +11,7 @@ export type DimensionContext = { text: string; leads: Lead[]; taken: Dimension[]
 /** Streams the dimensions offered for `context.text`, most relevant first: each differs from the others and from every one in `context.taken`. Must stop (by throwing or returning) once `signal` aborts. */
 export type DimensionSource = (context: DimensionContext, signal: AbortSignal) => AsyncIterable<Dimension>
 
-export type StrengthLevel = "slight" | "moderate" | "strong"
+export type StrengthLevel = "leve" | "moderada" | "fuerte"
 
 /** The fan is split into `optionCount` equal sectors; returns the one containing `position`. */
 export function optionIndexAt(optionCount: number, position: number) {
@@ -31,12 +31,12 @@ export function gradeIndexOf(position: number) {
 export function valueOf({ dimension, position }: Pick<Control, "dimension" | "position">) {
   if (dimension.kind === "choice") return dimension.options[optionIndexAt(dimension.options.length, position)]
   const { low, high } = dimension
-  return ["very " + low, "somewhat " + low, `midway between ${low} and ${high}`, "somewhat " + high, "very " + high][gradeIndexOf(position)]
+  return ["muy " + low, "algo " + low, `entre ${low} y ${high}`, "algo " + high, "muy " + high][gradeIndexOf(position)]
 }
 
 /** Thirds of the strength range. */
 export function strengthLevelOf(strength: number): StrengthLevel {
-  if (strength < 1 / 3) return "slight"
-  if (strength < 2 / 3) return "moderate"
-  return "strong"
+  if (strength < 1 / 3) return "leve"
+  if (strength < 2 / 3) return "moderada"
+  return "fuerte"
 }

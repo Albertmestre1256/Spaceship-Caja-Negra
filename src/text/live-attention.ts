@@ -1,32 +1,30 @@
-import { storedApiKey, streamCompletion } from "../llm/cerebras.ts"
+import { streamCompletion, WRITER_MODEL } from "../llm/nim.ts"
 import type { AttentionBox, AttentionSource } from "./attention.ts"
 import { wordSpans } from "./segments.ts"
 
 const MAX_BOXES = 3
 
+/** The boxes are the model's own answer to this question, matched back into the text; nothing is read from inside the model. */
 const SYSTEM_PROMPT = `
-The user message is the start of a story, cut off where the reader is. Pick the key phrases already in it that the very next words depend on most: the main influences on what comes right after the cut.
+El mensaje del usuario es el comienzo de un texto, cortado donde está el lector. Elegí las frases que ya están en él de las que más dependen las palabras que siguen: las influencias principales sobre lo que viene justo después del corte.
 
-- Pick 1 to 3 phrases: 1 when a single phrase drives what comes next, more only when several do.
-- Each phrase is an exact, unbroken copy of 2 to 8 consecutive words from the story. Do not skip, change, add or predict words.
-- In every phrase, wrap the single word that matters most in [brackets].
-- Output one phrase per line and nothing else.
+- Elegí de 1 a 3 frases: 1 cuando una sola frase empuja lo que sigue, más solo cuando varias lo hacen.
+- Cada frase es una copia exacta y sin cortes de 2 a 8 palabras seguidas del texto. No saltees, cambies, agregues ni adivines palabras.
+- En cada frase, poné entre [corchetes] la única palabra que más importa.
+- Escribí una frase por línea y nada más.
 
-EXAMPLE
-User: Mara had locked the kitchen an hour ago. Now the alarm went off, but it was not the one on her phone. She lay still and
-Assistant:
-locked the [kitchen] an hour ago
-it was [not] the one on her phone
-She lay [still] and
+EJEMPLO
+Usuario: Para Popper, la Historia no puede formular leyes del desarrollo histórico, pero no significa que no las use. Una historia a veces comprende afirmaciones tan
+Asistente:
+no puede formular [leyes] del desarrollo
+no significa que no las [use]
+comprende afirmaciones [tan]
 `.trim()
 
 export const liveAttention: AttentionSource = async function* (text, signal) {
-  const apiKey = storedApiKey()
-  if (!apiKey) throw new Error("save an API key first")
-
   const textWords = wordsOf(text)
   const yielded = new Set<number>()
-  const deltas = streamCompletion({ apiKey, system: SYSTEM_PROMPT, user: text, temperature: 0.3, maxCompletionTokens: 1000, signal })
+  const deltas = streamCompletion({ model: WRITER_MODEL, label: "recuadros de «atención»", system: SYSTEM_PROMPT, user: text, signal })
 
   for await (const line of linesOf(deltas)) {
     const box = boxFromLine(line, textWords)

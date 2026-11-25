@@ -11,11 +11,11 @@ export function showStatus(element: HTMLElement, { isGenerating, firstChunkMs, w
   element.toggleAttribute("data-streaming", isGenerating)
   element.replaceChildren(
     zone(
-      field("rate", glyph("»", "rate"), wordsPerSecond === undefined ? undefined : `${Math.round(wordsPerSecond)}`, "w/s"),
-      field("latency", glyph("▼", "latency to first chunk"), firstChunkMs === undefined ? undefined : `${Math.round(firstChunkMs)}`, "ms"),
+      field("rate", glyph("»", "velocidad"), wordsPerSecond === undefined ? undefined : `${Math.round(wordsPerSecond)}`, "p/s"),
+      field("latency", glyph("▼", "demora hasta el primer fragmento"), firstChunkMs === undefined ? undefined : `${Math.round(firstChunkMs)}`, "ms"),
     ),
-    zone(field("words", glyph("¶", "words, + generated past the knob"), `${words}`, `+${buffer}`)),
-    zone(field("boxes", "box", `${boxes}`), field("steering", "steer", `${steering}`), field("pinned", "pin", `${pinned}`)),
+    zone(field("words", glyph("¶", "palabras, + generadas más allá de la perilla"), `${words}`, `+${buffer}`)),
+    zone(field("boxes", "recuadros", `${boxes}`), field("steering", "dirección", `${steering}`), field("pinned", "fijadas", `${pinned}`)),
   )
 }
 

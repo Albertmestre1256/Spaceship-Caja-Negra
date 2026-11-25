@@ -1,18 +1,7 @@
+/** Openings for the live text, taken from Mestre, A. (2021), "Informe sobre «La miseria del historicismo» de Karl Popper". */
 export const STORY_OPENINGS = [
-  "Once upon a time",
-  "It was a dark and stormy night when",
-  "Long ago, in a forgotten corner of the world,",
-  "It all started the morning",
-  "Nobody ever expected that",
-  "Deep beneath the surface of the city,",
-  "The alarm went off, but",
-  "I never intended to become",
-  "There was an old legend about",
-  "From the moment the letter arrived,",
-  "High above the clouds,",
-  "Years after the war ended,",
-  "She knew it was a mistake the second",
-  "In the quiet hours just before dawn,",
-  "They told us never to open the door to",
-  "Everything changed the day",
+  "Karl Popper es un filósofo de la ciencia muy distinguido en el ambiente académico del siglo XX. Es un pensador que se adhiere al modelo Nomológico Deductivo –o modelo de cobertura legal–. Sin embargo, su postura autodefinida por él mismo, es la de un Racionalismo Crítico",
+  "Es posible vislumbrar dos objetivos en la obra de Popper: En primera instancia, Popper busca refutar la teoría fatalista que los historicistas poseen.",
+  "Pero entonces, ¿cuál es el papel de la Historia para Popper?",
+  "En mi entendimiento, Ciro Cardoso comete el error de considerar a Popper como un neopositivista y, más aún, hablar de que Popper se dedicó a atacar a la Historia.",
 ]

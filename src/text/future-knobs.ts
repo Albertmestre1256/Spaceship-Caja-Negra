@@ -282,7 +282,7 @@ export function createFutureKnobs({
     try {
       const dimensions = await Array.fromAsync(source({ ...context(), taken: takenOf() }, signal))
       if (signal.aborted) return
-      if (!dimensions.length) throw new Error("the dimension source offered nothing")
+      if (!dimensions.length) throw new Error("la fuente de dimensiones no ofreció nada")
       return dimensions
     } catch (error) {
       if (!signal.aborted) console.error(error)
@@ -527,20 +527,20 @@ export function createFutureKnobs({
     if (!dimension) {
       element.style.setProperty("--fill", `${knob.progress}`)
       labelWith(knob.label, PENDING_VALUE)
-      element.setAttribute("aria-label", `future knob, choosing a dimension, double click to delete`)
+      element.setAttribute("aria-label", `perilla de futuro, eligiendo una dimensión, doble clic para borrar`)
       if (!knob.menu) return [{ text: PENDING_VALUE, tone: "live" }]
       return knob.candidate === undefined ? [] : [{ text: previewOf(knob.menu[knob.candidate]) }]
     }
     const strength = strengthOf(knob)
     const value = valueOf({ dimension, position: positionOf(knob) })
     const percent = `${Math.round(strength * 100)}%`
-    const realized = knob.confidence === undefined ? "" : `${Math.round(knob.confidence * 100)}%${knob.pinned ? "" : " realized"}`
+    const realized = knob.confidence === undefined ? "" : `${Math.round(knob.confidence * 100)}%${knob.pinned ? "" : " cumplido"}`
     const isRealizing = knob.tracking !== undefined || knob.pinned !== undefined
     element.style.setProperty("--fill", `${isRealizing ? (knob.confidence ?? 0) : strength}`)
     element.toggleAttribute("data-tracking", knob.tracking !== undefined)
     labelWith(knob.label, `${dimension.name}: ${value}`, realized)
-    const state = knob.pinned ? "realized and pinned beside its sentence" : `${strengthLevelOf(strength)} influence${realized && `, ${realized}`}`
-    element.setAttribute("aria-label", `future knob, ${dimension.name}: ${value}, ${state}, double click to delete`)
+    const state = knob.pinned ? "cumplido y fijado junto a su oración" : `influencia ${strengthLevelOf(strength)}${realized && `, ${realized}`}`
+    element.setAttribute("aria-label", `perilla de futuro, ${dimension.name}: ${value}, ${state}, doble clic para borrar`)
     return [{ text: `${dimension.name}:`, tone: "dim" }, { text: value, tone: "live" }, { text: realized ? `${percent} · ${realized}` : percent }]
   }
 
