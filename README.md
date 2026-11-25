@@ -1,56 +1,72 @@
-# 🕹️ Spaceship IDE
+# 🕹️ Spaceship IDE · caja negra (versión en español)
 
-Steer ideas like a space pilot!
+¡Pilotear ideas como un piloto espacial!
 
-![Screencast](./extra/screencast.gif)
+![Grabación de pantalla](./extra/screencast.gif)
+
+## Esta versión
+
+Este repositorio es una adaptación en español de [Spaceship IDE](https://github.com/chuanqisun/spaceship), de Chuanqi Sun (2026, licencia MIT), hecha para una ponencia de historiografía. Su propósito es mostrar la complejidad de un modelo de lenguaje como **caja negra algorítmica**.
+
+- **En español:** la interfaz, los prompts y los ejes de control. El modelo continúa un ensayo académico que arranca con fragmentos de Mestre, A. (2021), _Informe sobre «La miseria del historicismo» de Karl Popper_, en lugar de una historia de ficción.
+- **Modelos de NVIDIA NIM** en lugar de Cerebras y Gemini: Nemotron 3 Ultra escribe la continuación, elige los recuadros y da los puntajes; Nemotron 3.5 Lightning propone los ejes.
+- **Modo rayos X:** muestra cada llamada al modelo con las instrucciones enviadas, el mensaje y la respuesta cruda.
+
+La idea central: los recuadros de «atención» y los puntajes **no se miden dentro del modelo**. Son respuestas que el propio modelo escribe cuando la interfaz se lo pregunta, y la interfaz las dibuja encima del texto. El modo rayos X lo deja a la vista: todo lo que la interfaz conoce del modelo es texto que entra y texto que sale.
+
+Instrucciones de uso, cambios en detalle y límites: [LEEME.md](./LEEME.md).
+
+---
+
+_Lo que sigue es el README original de Chuanqi Sun, traducido al español. Las demos y la página enlazadas son las del proyecto original, en inglés._
 
 ## Demos
 
-Watch on [Instagram](https://www.instagram.com/reels/DfyQPhFtW-z/) and [YouTube](https://www.youtube.com/watch?v=3WmNLWUmcnY). You can try the simulator at [https://chuanqisun.github.io/spaceship/](https://chuanqisun.github.io/spaceship/) with the option to go live with your API keys for Cerebras and Gemini. Keys stay in your browser local storage. Do it at your own risk.
+Se puede ver en [Instagram](https://www.instagram.com/reels/DfyQPhFtW-z/) y [YouTube](https://www.youtube.com/watch?v=3WmNLWUmcnY). El simulador original se puede probar en [https://chuanqisun.github.io/spaceship/](https://chuanqisun.github.io/spaceship/), con la opción de pasar al modo en vivo con tus propias claves de API de Cerebras y Gemini. Las claves quedan en el almacenamiento local del navegador. Hacelo bajo tu propia responsabilidad.
 
-## Conjecture
+## Conjetura
 
-> In the near future, LLM and Decision Models will reach 60 FPS interactivity.
+> En un futuro cercano, los LLM y los modelos de decisión van a alcanzar una interactividad de 60 FPS.
 
-When that happens, what new interaction paradigms will unlock? This project demonstrates plausible and desirable interactions for that future.
+Cuando eso pase, ¿qué nuevos paradigmas de interacción se van a habilitar? Este proyecto muestra interacciones plausibles y deseables para ese futuro.
 
-1. **Focus monitor**: can we visualize what LLM is paying attention to, and use that to guide human's focus towards what's important?
+1. **Monitor de foco**: ¿podemos visualizar a qué le está prestando atención el LLM, y usar eso para guiar la atención humana hacia lo importante?
 
-   ![focus monitor](./extra/clips/focus-monitor.gif)
+   ![monitor de foco](./extra/clips/focus-monitor.gif)
 
-2. **Attention lock**: can we force LLM to pay more attention to specific phrases so as to bias its future behavior?
+2. **Bloqueo de atención**: ¿podemos obligar al LLM a prestarle más atención a ciertas frases para sesgar su comportamiento futuro?
 
-   ![attention lock](./extra/clips/attention-lock.gif)
+   ![bloqueo de atención](./extra/clips/attention-lock.gif)
 
-3. **Future Vector Steering**: can we decompose the task into eigenvectors, independently tune each, and re-compose them to influence the incoming text?
+3. **Dirección por vectores de futuro**: ¿podemos descomponer la tarea en vectores propios, ajustar cada uno por separado y recomponerlos para influir en el texto que viene?
 
-   ![future steering](./extra/clips/future-steering.gif)
+   ![dirección del futuro](./extra/clips/future-steering.gif)
 
-4. **Realtime re-generation**: when text generation is cheap and fast, can we explore alternative futures by scrubbing?
+4. **Regeneración en tiempo real**: cuando generar texto es barato y rápido, ¿podemos explorar futuros alternativos deslizándonos por el texto?
 
-   ![realtime regeneration](./extra/clips/realtime-regeneration.gif)
+   ![regeneración en tiempo real](./extra/clips/realtime-regeneration.gif)
 
-## Design process
+## Proceso de diseño
 
-I used Claude Code for most of the implementation but stayed hands-on for the UI/UX. I iterate using interactive style swatch, a technique where I prompt AI to give me diverse options of designs, I provide feedback, and it iterates. You can see the design artifacts in the [extra page](https://chuanqisun.github.io/spaceship/extra/style-1.html).
+Usé Claude Code para la mayor parte de la implementación, pero me ocupé personalmente de la interfaz y la experiencia de uso. Itero con un muestrario de estilos interactivo: le pido a la IA opciones de diseño variadas, le doy comentarios y ella itera. Los materiales de diseño se pueden ver en la [página extra](https://chuanqisun.github.io/spaceship/extra/style-1.html).
 
-To achieve the realtime experience, I have to use agreesive speculative generation and manage cache invalidation based on user interactions. For example, when the main knob moves backward, I have to empty future texts and cancel ongoing requests. There are many considerations like this throughout the system and that took a lot of human judgement - claude didn't one shot them.
+Para lograr la experiencia en tiempo real tengo que usar una generación especulativa agresiva y manejar la invalidación de caché según lo que hace el usuario. Por ejemplo, cuando la perilla principal retrocede, tengo que vaciar los textos futuros y cancelar los pedidos en curso. Hay muchas consideraciones como esta en todo el sistema, y llevaron mucho criterio humano: Claude no las resolvió de una.
 
-## Theory
+## Teoría
 
-I'm currently focusing on systems that help human shape ideas in realtime. This project is a small step towards my [upcoming thesis](https://code.chuanqisun.com/master-thesis/) at the MIT Media Lab, where I investigate how semantic and symoblic systems can be coupled to enhance human creativity, agency, and joy of craft.
+Actualmente me concentro en sistemas que ayuden a las personas a dar forma a ideas en tiempo real. Este proyecto es un paso pequeño hacia mi [próxima tesis](https://code.chuanqisun.com/master-thesis/) en el MIT Media Lab, donde investigo cómo acoplar sistemas semánticos y simbólicos para potenciar la creatividad humana, la autonomía y el gusto por el oficio.
 
-## Community
+## Comunidad
 
-This repo can be the conceptual launchpad for new designs and applications. Here is what the community has built. Open a PR to add yours!
+Este repositorio puede ser la plataforma de lanzamiento conceptual para nuevos diseños y aplicaciones. Esto es lo que construyó la comunidad. ¡Abrí un PR para sumar el tuyo!
 
-- [Spaceship Writer](https://marketplace.visualstudio.com/items?itemName=brentlee-personal.spaceship-writer), a VSCode Extension by [brentlee](https://github.com/brentlee-personal), an independent adaptation of Chuanqi Sun’s Future Vector Steering design ([Source](https://github.com/brentlee-personal/spaceship-vscode) · [Demo in VS Code on Linux](https://github.com/brentlee-personal/spaceship-vscode/releases/download/v0.3.0/spaceship-writer-0.3.0-linux.mp4))
-- [Spaceship Lime](https://spaceship-lime.vercel.app), steer local models in browser, by [Philippe](https://github.com/philippe-page)
-- [Story Pilot](https://beyondchat.design/lab/story-pilot/), design pattern distilled by [Dominik](https://www.linkedin.com/in/dominikwitzke/)
+- [Spaceship Writer](https://marketplace.visualstudio.com/items?itemName=brentlee-personal.spaceship-writer), una extensión de VS Code de [brentlee](https://github.com/brentlee-personal), adaptación independiente del diseño de dirección por vectores de futuro de Chuanqi Sun ([código](https://github.com/brentlee-personal/spaceship-vscode) · [demo en VS Code sobre Linux](https://github.com/brentlee-personal/spaceship-vscode/releases/download/v0.3.0/spaceship-writer-0.3.0-linux.mp4))
+- [Spaceship Lime](https://spaceship-lime.vercel.app), para dirigir modelos locales en el navegador, de [Philippe](https://github.com/philippe-page)
+- [Story Pilot](https://beyondchat.design/lab/story-pilot/), patrón de diseño destilado por [Dominik](https://www.linkedin.com/in/dominikwitzke/)
 
-## Citation
+## Cita
 
-If you build on this work, please cite it as:
+Si construís sobre este trabajo, citalo así:
 
 ```bibtex
 @misc{sun2026spaceship,
